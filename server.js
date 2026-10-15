@@ -56,6 +56,20 @@ app.get('/preview.jpg', (req, res) => {
   res.send(svg);
 });
 
+// Serve Next.js optimized images directly from disk
+app.get('/_next/image', (req, res) => {
+  let imgUrl = req.query.url;
+  if (imgUrl) {
+    imgUrl = decodeURIComponent(imgUrl);
+    const cleanPath = imgUrl.startsWith('/') ? imgUrl.slice(1) : imgUrl;
+    const filePath = path.join(__dirname, cleanPath);
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+  }
+  res.status(404).end();
+});
+
 // Single Page Application routing fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
