@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -10,8 +11,37 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0';
 
-// Serve static assets from the current directory
-app.use(express.static(__dirname));
+// Enable Gzip/Brotli compression for ultra-fast asset delivery
+app.use(compression({
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  }
+}));
+
+// Performance & Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
+// High-performance caching for hashed Next.js static assets (1 year immutable)
+app.use('/_next/static', express.static(path.join(__dirname, '_next/static'), {
+  maxAge: '365d',
+  immutable: true
+}));
+
+// Media caching for project images and assets (7 days)
+app.use('/src/assets', express.static(path.join(__dirname, 'src/assets'), {
+  maxAge: '7d'
+}));
+
+// Serve remaining static assets with default caching
+app.use(express.static(__dirname, {
+  maxAge: '1h'
+}));
 
 // Fallback placeholder for missing project images
 app.get('/projects/:name', (req, res, next) => {
@@ -70,9 +100,19 @@ app.get('/_next/image', (req, res) => {
   res.status(404).end();
 });
 
-// Single Page Application routing fallback
+// Single Page Application routing fallback with no-cache for index.html
 app.get('*', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Resilient process handlers
+process.on('uncaughtException', (err) => {
+  console.error('[Process] Uncaught Exception:', err?.message || err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Process] Unhandled Rejection:', reason);
 });
 
 app.listen(PORT, HOST, () => {

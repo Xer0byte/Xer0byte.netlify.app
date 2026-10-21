@@ -324,6 +324,8 @@
                                     children: [(0, n.jsx)("img", {
                                         src: e.image,
                                         alt: e.title,
+                                        loading: "lazy",
+                                        decoding: "async",
                                         referrerPolicy: "no-referrer",
                                         className: "w-full h-full object-cover rounded-lg"
                                     }), (0, n.jsx)("div", {
@@ -365,6 +367,7 @@
                         (0, n.jsx)("img", {
                             src: t.image,
                             alt: t.title,
+                            decoding: "async",
                             referrerPolicy: "no-referrer",
                             className: "w-full h-48 sm:h-72 object-cover rounded-xl mb-6 border border-white/10 shadow-lg"
                         }),
