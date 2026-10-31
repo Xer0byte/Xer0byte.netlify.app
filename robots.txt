@@ -1,0 +1,43 @@
+# robots.txt for Xer0byte (https://xer0byte.netlify.app/)
+# Updated to late-2026 search engine and AI-assisted crawler specifications
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/image*
+
+# Google Crawlers (Search & AI Mode / AI Overviews)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Perplexity AI Search
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic Claude Search & Discovery
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Apple Intelligence & Search
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft Bing & Copilot
+User-agent: Bingbot
+Allow: /
+
+# XML Sitemap Location
+Sitemap: https://xer0byte.netlify.app/sitemap.xml

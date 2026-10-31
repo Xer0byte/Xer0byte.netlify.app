@@ -100,6 +100,20 @@ app.get('/_next/image', (req, res) => {
   res.status(404).end();
 });
 
+// Search Engine & AI Crawler directives
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(__dirname, 'robots.txt'));
+});
+
+// XML Sitemap
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=UTF-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
 // Single Page Application routing fallback with no-cache for index.html
 app.get('*', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
